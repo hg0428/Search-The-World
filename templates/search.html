@@ -1,0 +1,50 @@
+<!Doctype html>
+<html>
+
+<head>
+	<title>{{ search }} - SearchTheWorld</title>
+	<link rel="shortcut icon" href="/favicon.ico?v=1" type="image/x-icon" />
+	<link rel="stylesheet" href="/static/css/home.css">
+  <script src="/static/js/page.js"></script>
+</head>
+
+<body>
+	<div id="searchbar">
+		<form>
+			<input type="text" name="q" id="search" placeholder="Search..." value="{{search}}">
+    </form>
+    <span id="toolbar"><a class="des" href="/index">Missing a site?</a><span>
+    <hr/>
+    </div>
+    <div class="body">
+    {% if word != search %}
+      <p id="dym">Did you mean: <a href="/?q={{word}}">{{word}}</a></p>
+    {%endif%}
+    {%if code!={}%}
+      <p>{{total}} results in {{round(time, 5)}} seconds.</p>
+      {%for i in code%}
+        {%set title, description, score, url, fav = code[i]["title"], code[i]["des"], code[i]["score"], code[i]["url"], code[i]["favicon"]%}
+        <div class="result">
+          <img src="{{fav}}" onerror="this.onerror=null; this.remove();"></img>
+          <strong><a href="{{url}}">{{title}}</a></strong>
+          <p>{{(description|safe)}}</p>
+          <p>Score: {{round(score)}}</p>
+          <br/>
+        </div>
+      {%endfor%}
+    {% else %}
+      <h2 class="result" style="font-size:25px;">No more good matches 
+        <p class="des">Try searching for what will apear on the site. 
+        <br/>Also, check spelling and make sure its in English or another common language. <br/>
+        You may have simply gone over the amount of pages that there are.</p>
+      </h2>
+    {% endif %}
+    </div>
+  </body>
+  <div class="footer"><hr/>
+      <footer>Page: 
+        <form action="javascript:gotopage();" style = "display:inline" >
+          <input name="page" type="number" id="page" value="{{pagenum+1}}"></input>
+        </form> out of {{roundup(total/perpage)}}<br/><br/>© 2021 Projxon | All rights reserved</footer>
+    </div>
+</html>

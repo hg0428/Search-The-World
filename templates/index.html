@@ -1,0 +1,36 @@
+<!Doctype html>
+<html>
+  <head>
+    <title>Index My Site – Search The World</title>
+    <link rel="shortcut icon" href="/favicon.ico?v=1" type="image/x-icon"/>
+    <link rel="stylesheet" href="/static/css/home.css">
+    <style>
+      #sub {
+        radius:25px;
+        font-size:25px;
+      }
+      #site {
+        font-size:20px;
+      }
+    </style>
+    <script>
+      function back() {
+        window.location.replace("https://search-the-world.projxon.repl.co/");
+      }
+    </script>
+  </head>
+  <body>
+    <button class="back" onclick="back();"><image src="/static/img/lt.svg" width="30" height="25"></image></button>
+    <center><h1>Index My Site</h1>
+    <p class="des">Please include protocol and / at the end for best results.</p>
+    <br/>
+    <form method="POST">
+      <label for="site">URL: </label>
+      <input type="text" name="site" placeholder="URL..." id="site"></input>
+      <br/>
+      <br/>
+      <input type="submit" id="sub" value="Index!"></input>
+      {{(note|safe)}}
+    </form></center>
+  </body>
+</html>

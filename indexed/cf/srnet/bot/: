@@ -1,0 +1,2 @@
+title:SRNET-Client;addr:bot.srnet.cf
+SRNET-Client   SRNET-Client   Invite our bot to your server!   Usage  [name] means "required argument".<name> means "optional argument".|      means "or".Brackets are not required.Prefix                                - sc:connect [url]                         - connect to the server.   send [id] [opcode|alias] [content] - send the request to the server.  close [id]                          - close the connection.  

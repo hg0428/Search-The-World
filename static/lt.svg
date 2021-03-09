@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="Less-Than Sign.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="393.917"
+     inkscape:cy="483.21876"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="645"
+     inkscape:window-height="722"
+     inkscape:window-x="691"
+     inkscape:window-y="107" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="font-size:1000px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:OCRA;-inkscape-font-specification:OCRA"
+       d="M 521,394.36218 C 522.99948,393.69617 526.33281,393.36284 531,393.36218 L 548,396.36218 C 549.33278,397.0295 550.66612,397.69617 552,398.36218 C 555.99944,400.36283 559.99944,403.36283 564,407.36218 C 567.99943,411.36282 570.99943,415.36282 573,419.36218 C 576.33276,426.02948 577.99942,433.3628 578,441.36218 C 577.99942,457.36278 571.6661,470.02943 559,479.36218 C 556.33278,481.36275 498.33284,515.69605 385,582.36218 C 272.33306,648.36259 215.66645,681.69589 215,682.36218 C 214.99979,682.36255 271.6664,715.69585 385,782.36218 C 498.33284,849.02905 556.33278,883.36235 559,885.36218 C 571.6661,894.69567 577.99942,907.36233 578,923.36218 L 575,941.36218 L 573,945.36218 C 570.99943,949.36229 567.99943,953.36228 564,957.36218 C 559.99944,961.36227 555.99944,964.36227 552,966.36218 C 544.66612,969.6956 536.99946,971.36226 529,971.36218 C 521.66614,971.36226 514.66615,969.6956 508,966.36218 L 128,742.36218 C 121.99988,738.3625 116.99988,733.3625 113,727.36218 C 110.33322,722.69585 108.33322,717.36252 107,711.36218 L 107,654.36218 C 108.33322,648.36259 110.33322,643.02926 113,638.36218 C 116.99988,631.69594 121.99988,626.36261 128,622.36218 L 508,399.36218 C 511.99949,396.69617 516.33282,395.02951 521,394.36218"
+       id="text7927" />
+  </g>
+</svg>

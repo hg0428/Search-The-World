@@ -1,0 +1,135 @@
+*{
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+.des {
+  font-size:20px;
+  line-height:30px;
+}
+.back {
+  cursor: pointer;
+  font-size:25px;
+  padding:5px;
+  padding-left:5px;
+  color:rgb(0,128,0);
+  border: 0.1px solid black;
+  background-color:rgb(150,150,150);
+  border-radius:30px;
+}
+.back:hover::after {
+  content:"Back";
+}
+#search {
+  box-shadow:0 2px 5px 1px rgba(64,60,67,.16);
+  width: 50%;
+  box-sizing: border-box;
+  border: 0px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: white;
+  background-image: url('/static/img/searchicon.png');
+  background-position: 10px 10px; 
+  background-repeat: no-repeat;
+  margin:30px;
+  margin-bottom:10px;
+  padding: 12px 20px 12px 40px;
+}
+.cen {
+  text-align: center;
+  position:fixed;
+  top:30%;
+  width:100%;
+}
+
+
+.result {
+  box-shadow:0 2px 5px 1px rgba(64,60,67,.16);
+  background-color:white;
+  font-size:15px;
+  width:60%;
+  color:#4d5156;
+  border-radius:30px;
+  padding:18px;
+  margin:45px;
+  margin-left: auto; 
+  margin-right: auto;
+  line-height:15px;
+  border:0px solid rgb(200,200,200);
+}
+.result a{
+  font-size: 20px;
+  text-decoration: none;
+  color:blue;
+}
+strong {
+  font-size:18px;
+  color:black;
+}
+span {
+  display:inline-block;
+}
+#searchbar {
+  text-align: center;
+  margin:0;
+  padding:25px;
+  padding-bottom:35px;
+  background-color:white;
+}
+body {
+  min-height: 85vh;
+  margin:0;
+  padding:0;
+  margin-bottom:10.9%;
+  background-color: rgb(240,240,240);
+}
+html {
+  margin:0;
+  padding:0;
+  position:relative;
+}
+#toolbar {
+  float:left;
+  margin-left:25%;
+  margin-right:25%;
+  margin-top:0;
+}
+a {
+  text-decoration: none;
+  font-style: italic;
+  color:blue;
+}
+#dym {
+  padding:15px;
+  margin:45px;
+  color:red;
+  font-size:18px;
+}
+.footer {
+  background-color:rgb(215, 215, 215);
+  position: absolute;
+  bottom:0;
+  width:100%;
+
+}
+footer {
+  text-align: center;
+  padding:2.5%;
+  color:black;
+}
+.footer hr {
+  color:black;
+  position:absolute;
+}
+#page {
+  width:30px;
+}
+.body {
+  text-align: center;
+  padding-left:45px;
+  color:grey;
+}
+.result img {
+  float:left;
+  height:25px;
+  margin-left:10px;
+}
