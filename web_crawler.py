@@ -1,9 +1,9 @@
-from urllib.request import Request, urlopen
+from urllib3 import PoolManager
 from urllib.parse import urlparse as parseurl, urljoin, urlencode
 from bs4 import BeautifulSoup as bs
 import time
 from bs4.element import Comment
-
+http = PoolManager()
 
 def save(f, data: list, sep: str):
     open(f, "w+").write(sep.join(data))
@@ -11,7 +11,7 @@ def save(f, data: list, sep: str):
 
 def tag_visible(element):
     if element.parent.name in [
-            'style', 'script', 'head', 'meta', "[document]"
+            'style', 'script', 'head', 'meta', "[document]", "div"
     ]:
         return False
     if isinstance(element, Comment):
@@ -26,23 +26,20 @@ def GetText(soup):
 
 
 def getData(url):
-    try:
-        req = Request(url, headers={"Identity": "Projxon Web Crawler 01", "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) Gecko/20100101 Firefox/42.0"})
-    except:
-        print("Error:", url)
-        return False
     trys = 0
     while trys < 10:
         try:
-            responce = urlopen(req)
+            responce  = http.request("GET",url, headers={"Identity": "Projxon Web Crawler 01", "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.3 Safari/605.1.15"})
             break
         except:
             time.sleep(0.5)
             trys += 1
-    if trys > 10: return False
+    if trys >= 10: return False
     try:
-        f = str(responce.read().decode())
-    except:
+        f = str(responce.read(decode_content=True).decode('utf-8'))
+        f=responce.data
+    except Exception as e:
+        print(e)
         return False
     content_type = responce.headers.get('Content-Type').lower()
     if "html" not in content_type: return False
@@ -57,7 +54,7 @@ def getTitle(soup, urlp):
     return title
 
 
-DONE = [i for i in open("done").read().split("\n") if i != ""]
+#DONE = [i for i in open("done").read().split("\n") if i != ""]
 
 
 def getFavicon(soup, site):
@@ -77,13 +74,13 @@ def send(link, data, soup, urlp):
         "favicon": getFavicon(soup, link),
         "title": getTitle(soup, urlp)
     }).encode()
-    req = Request('https://regularwordydisc.generationxcode.repl.co/here',
+    req = http.request("POST",'https://regularwordydisc.generationxcode.repl.co/here',
                   data=data,
                   headers={"Identity": "Projxon Web Crawler 01"
                            })  # this will make the method "POST"
 
     try:
-        resp = urlopen(req)
+        eq.read()
     except:
         pass
 

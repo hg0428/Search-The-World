@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://search-the-world.hg0428.repl.co/sitemap.xml

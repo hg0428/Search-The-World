@@ -1,9 +1,11 @@
 <!Doctype html>
-<html>
+<html lang="en">
   <head>
     <title>Index My Site – Search The World</title>
     <link rel="shortcut icon" href="/favicon.ico?v=1" type="image/x-icon"/>
-    <link rel="stylesheet" href="/static/css/home.css">
+    <link rel="stylesheet" href="/static/css/home.css?theme=0"id="home">
+    <link rel="stylesheet" href="/static/css/darkmode.css?theme=0" id="darkmode" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
       #sub {
         radius:25px;
@@ -15,11 +17,16 @@
     </style>
     <script>
       function back() {
-        window.location.replace("https://search-the-world.projxon.repl.co/");
+        window.location.replace("https://search-the-world.hg0428.repl.co/");
       }
     </script>
+    <script src="/static/js/darkmode.js"></script>
   </head>
   <body>
+    <label class="switch">
+  <input type="checkbox">
+  <span class="slider"></span>
+  </label>
     <button class="back" onclick="back();"><image src="/static/img/lt.svg" width="30" height="25"></image></button>
     <center><h1>Index My Site</h1>
     <p class="des">Please include protocol and / at the end for best results.</p>

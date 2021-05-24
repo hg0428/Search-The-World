@@ -1,23 +1,43 @@
-import urllib
-from urllib.parse import urlparse as parseurl, urljoin
-import os
-from nltk.corpus import stopwords as stopwords
-try:
-    stopwords = stopwords.words('english')
-except:
-    import nltk
-    nltk.download("stopwords")
-    stopwords = stopwords.words('english')
+from urllib.parse import urlparse as parseurl, urljoin, urlunparse
+import time
+from os import listdir, path as ospath, makedirs
 from bs4 import BeautifulSoup as bs
-import re
-DATA = {}
-from web_crawler import *
+from re import findall
 
-# Add reference points for all parent domains
+DATA = {}
+from web_crawler import getData, getTitle, getFavicon, GetText
+from sys import setswitchinterval, getsizeof
+
+setswitchinterval(9999999)
 similar = {"-": " "}
+stopwords = open("stopwords.txt").read().split()
+MAX_SPACE = 4000000000  # in bytes
+
+
+def make_path(netloc, p="indexed/"):
+    folder = netloc.split(".")
+    folder.reverse()
+    path = p + '/'.join(folder) + "/"
+    return path
+
+
+def get_sub_domains(url):
+    if "://" in url:
+        urlp = parseurl(url)
+        urlsplit = urlp.netloc.split(".")
+    else:
+        urlsplit = url.split(".")
+    l = []
+    if len(urlsplit) < 3: return l
+    for _ in urlsplit:
+        urlsplit = urlsplit[1:]
+        l.append(".".join(urlsplit))
+        if len(urlsplit) < 3:
+            return l
 
 
 def CLEAN(text):
+    text = text.lower()
     for s in similar:
         r = similar[s]
         text = text.replace(s, r)
@@ -27,7 +47,7 @@ def CLEAN(text):
 
 
 def getwords(s):
-    return re.findall(r"[\w']+", s)
+    return set(findall(r"[\w']+", s))
 
 
 def parseText(text, things):
@@ -52,7 +72,7 @@ def parseText(text, things):
                 s = ""
             if item == CLEAN(
                     s.lower()) and not start.startswith(s) and do == True:
-                newtext += start + s + end
+                newtext += f"{start} {s} {end}"
                 s = ""
         newtext += s
         text = newtext
@@ -81,30 +101,47 @@ def hascommon(i1, i2):
 
 def getsites(path="indexed/"):
     try:
-        refs = int(open(path + "refs"))
+        refs = open(f"{path}refs").read().split("\n")
     except:
-        refs = 1
-    for i in os.listdir(path):
-        if os.path.isfile(path + i) and i.startswith(":"):
-            DATA[open(path + i).readlines()[0].split(";")[0].split(":")[1]] = {
-                "file": path + i,
-                "ref": refs
+        refs = [path]
+    for i in listdir(path):
+        if ospath.isfile(path + i) and i.startswith(":"):
+            saved_text = None
+            text = open(path + i).read().split("\n")
+            items = getItems(text[0])
+            if len(text) == 3: favicon = text[2]
+            else: favicon = ""
+            if getsizeof(vars()) < MAX_SPACE:
+                saved_text = text[1]
+            #saves in memory if it has space, else it tells it to retreve it from files when needed
+            DATA[items["title"]] = {
+                "file":
+                path + i,
+                "title":
+                items["title"],
+                "ref":
+                refs,
+                "link":
+                "https://" + items["addr"] +
+                i.split("/")[-1].replace(":", "/"),
+                "addr":
+                items["addr"],
+                "favicon":
+                favicon,
+                "saved_text":
+                saved_text
             }
-        elif not os.path.isfile(path + i):
+        elif not ospath.isfile(path + i):
             getsites(path + i + "/")
 
 
 class Result:
     def __init__(self, urlp, title, text, path, soup):
-        self.soup = soup
-        self.urlp = urlp
-        self.url = urllib.parse.urlunparse(self.urlp)
+        self.soup, self.urlp, self.path, self.formatted = soup, urlp, path, ""
+        self.url = urlunparse(self.urlp)
         self.title = title.replace('\n', '').replace(":", "–").replace(";", "")
         self.text = text.replace("\n",
                                  "").replace("<", "&lt;").replace(">", "&lt;")
-        self.path = path
-        self.images = []
-        self.formatted = ""
         if urlp.path == "": self.urlpath = "/"
         else: self.urlpath = urlp.path
         if not self.urlpath.endswith("/"): self.urlpath += "/"
@@ -114,35 +151,41 @@ class Result:
         self.formatted = f"title:{self.title};addr:{self.urlp.netloc}\n{self.text}\n{getFavicon(self.soup, self.url)}"
         #print("Formatted:",self.formatted)
     def getreflinks(self):
+        for up in get_sub_domains(self.url):
+            up = parseurl(up)
+            path = make_path(up.netloc)
+            if not ospath.exists(path):
+                try:
+                    makedirs(path)
+                except:
+                    pass
+            try:
+                r = open(path + "refs").read().split("\n")
+                if self.url not in r:
+                    r.append(self.url)
+            except:
+                r = [self.url]
+            open(path + "refs", "w+").write('\n'.join(r))
         for l in self.soup.find_all('a'):
             l = l.get("href")
             up = parseurl(urljoin(self.urlp.geturl(), l))
-            folder = up.netloc.split(".")
-            folder.reverse()
-            path = "indexed/" + '/'.join(folder) + "/"
-            if not os.path.exists(path): continue
+            path = make_path(up.netloc)
+            if not ospath.exists(path):
+                try:
+                    makedirs(path)
+                except:
+                    pass
             try:
-                r = int(open(path + "info").read())
+                r = open(path + "refs").read().split("\n")
+                if self.url not in r:
+                    r.append(self.url)
             except:
-                r = 1
-            r += 1
-            open(path + "refs", "w+").write(str(r))
+                r = [self.url]
+            open(path + "refs", "w+").write('\n'.join(r))
 
     def write(self):
         self.format()
-        return open(self.path, "w+").write(self.formatted)
-
-    def writeimages(self):
-        images = []
-        for i in self.images:
-            if not i.startswith(self.urlp.scheme) and not i.startswith("/"):
-                i = self.urlp.scheme + "://" + self.urlp.netloc + self.urlpath + i
-            elif i.startswith("/"):
-                i = self.urlp.scheme + "://" + self.urlp.netloc + i
-            images.append(i)
-        self.images = images
-        return open('/'.join(self.path.split("/")[:-1]) + "/images",
-                    "a+").write("\n".join(images))
+        return open(self.path.lower(), "w+").write(self.formatted)
 
 
 def index(url):
@@ -150,19 +193,20 @@ def index(url):
     url = urlp.scheme + "://" + urlp.netloc + urlp.path
     if urlp.path == "": urlpath = "/"
     else: urlpath = urlp.path
-    folder = urlp.netloc.split(".")
-    folder.reverse()
-    path = "indexed/" + '/'.join(folder) + "/"
+    path = make_path(urlp.netloc)
     f = getData(url)
-    if f == False: return False
+    #f= ' '.join(str(f).split())
+    if f == False:
+        print("Error:", url)
+        return False
     try:
-        os.makedirs(path)
+        makedirs(path)
     except:
         pass
     soup = bs(f, features="html5lib")
     title = getTitle(soup, urlp)
     text = str(GetText(soup))
-    if text == "": return
+    if text == "": return False
     r = Result(urlp, title, text, path + urlpath.replace("/", ":"), soup)
     r.write()
     print("Indexed:", url)
@@ -176,33 +220,42 @@ def makedescription(text, item):
                               len(des[0]) - amount):] + des[1] + des[2][
                                   des[2].rfind(' ', 0,
                                                len(des[2]) - amount):]
-
+    #makes the description
     return des
 
 
-def getscore(f, refs, query, words):
+#scores each site
+def getscore(data, query, words):
+    f = data["file"]
+    refs = len(data["ref"])
     score = 0
-    contents = open(f).read().split("\n")
-    if len(contents) == 3: favicon = contents[2]
-    else: favicon = ""
-    items = getItems(contents[0])
-    contents = contents[1]
+    contents = data["saved_text"]
+    if contents == None:
+        print("slow") #keep this!
+        contents = open(f).read().split("\n")[1]
+    favicon = data["favicon"]
     l = {
-        items["title"].lower(): 10,
-        items["addr"].lower(): 5,
-        no_stop_words(words): 1,
+        data["title"].lower(): 20,
+        data["addr"].lower(): 25,
+        no_stop_words(words): 1.2,
+        contents:1,
         contents.lower(): 0.5,
         CLEAN(contents.lower()): 0.3
     }
     contained = []
+    numberofwordsinsite = len(contents.split())
     for i in l:
         m = l[i]
-        score += i.lower().count(query) * 5 * m
+        density = i.split().count(query) / numberofwordsinsite
+        score += i.count(query) * 5 * m * density
+        score += i.split().count(query) * m * 10 * density
         for w in words:
-            score += i.lower().count(w) * m
+            density = i.split().count(w) / numberofwordsinsite
+            score += i.split().count(w) * m * 5 * density
+            score += i.count(w) * m * density
             if score >= 1: contained.append(w)
     score *= len(contained)
-    if query in contents:
+    if query in CLEAN(contents):
         des = makedescription(contents, query)
     else:
         hc = hascommon(words, contents)
@@ -211,25 +264,24 @@ def getscore(f, refs, query, words):
         elif score <= 0:
             return False
         else:
-            des = contents[:300]
-    des = parseText(des, words + [query])
-    link = "https://" + items["addr"] + f.split("/")[-1].replace(":", "/")
-    if score > 0:
+            des = contents[:400]
+    des = parseText(des, {query} | words)
+    link = data["link"]
+    a = (len(contents) - (score * 5)) / 25
+    score -= a * (a > 0)
+    if score < 0:
+        score = contents.lower().count(query)
         score += refs**2
-        return score, des, link, items["title"], favicon
-    else:
-        print("???")
-        return False
+    score += refs
+    return score, des, link, data["title"], favicon
 
 
-def searchall(q, amount=15, pagenum=0):
-    words = list(dict.fromkeys(getwords(q)).keys())
+def searchall(q):
+    words = getwords(q)
     codedict = {}
     l = {}
     for s in DATA:
-        f = DATA[s]['file']
-        refs = DATA[s]['ref']
-        r = getscore(f, refs, q, words)
+        r = getscore(DATA[s], q, words)
         if r == False: continue
         score, des, link, title, fav = r
         l[score] = {
@@ -239,12 +291,24 @@ def searchall(q, amount=15, pagenum=0):
             "url": link,
             "favicon": fav
         }
-    for key in sorted(l, reverse=True)[pagenum * amount:pagenum * amount +
-                                       amount]:
+    for key in sorted(l, reverse=True):
         codedict[key] = l[key]
-    return codedict, len(l)
+    del words, q, l
+    return codedict
 
-def update_all_sites():
-  for d in DATA:
-    print(d)
-update_all_sites()
+
+def update_all_sites(iters=3):
+    print("Starting Update...")
+    i = 0
+    while i < iters:
+        print(f"Iter {i+1} started.")
+        for d in DATA:
+            index(DATA[d]["link"])
+        print(f"Iter {i+1} complete!\n")
+        time.sleep(10)
+        i += 1
+    print("Updated!")
+
+
+#Updates every site in the data base. This is usefull for when I update the format.
+#Using multiple iterations it becomes waking repl proof

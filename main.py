@@ -1,17 +1,77 @@
-from toolsys import *
-from flask import *
+from toolsys import getsites, index, searchall
+from os import listdir, remove
+from flask import request, render_template, Flask, send_file
+import concurrent.futures
 from autocorrect import Speller
-import time
+from time import time
+import json
+## https://yoast.com/what-is-structured-data/
+## https://schema.org/
+## https://yoast.com/what-is-structured-data/
+## !^^!Use Those!^^!
+
+
+#sitemap datetime format: YYYY-MM-DDThh:mm:ssTZD (eg 2021-05-18T13:58:54-7:00)
+
+#Also make better descriptions!
 spell = Speller(fast=True)
 getsites()
+
 app = Flask("Search The World")
-indev = False
+from flask_compress import Compress
+
+
+def replacefromto(string, start, end, replacement):
+    return f"{string[:start]}{replacement}{string[end:]}"
+
+
+COMPRESS_MIMETYPES = [
+    'text/html', 'text/css', 'application/json', 'text/js', 'img/png'
+]
+COMPRESS_LEVEL = 6
+COMPRESS_MIN_SIZE = 500
+Compress(app)
+searches = listdir("searches/")
+for f in searches:
+    remove("searches/" + f)
+searches = []
+themes = {}
+
+
+#[pagenum * amount:pagenum * amount + amount]
+def makejson(q):
+    t = time()
+    if q not in searches:
+        code = searchall(q)
+
+        open(f"searches/{q}", "w+").write(str(code))
+        searches.append(q)
+    else:
+        code = eval(open(f"searches/{q}").read())
+    jsondict = {
+        "ResultCount": len(code),
+        "Time": time() - t,
+        "Information": {
+            "Main": {},
+            "Descriptions": {}
+        },
+        "Results": {}
+    }
+    for i in code:
+        d = code[i]
+        jsondict["Results"][d["title"]] = {
+            "score": d["score"],
+            "description": d["des"],
+            "title": d["title"],
+            "link": d["url"],
+            "favicon": d["favicon"]
+        }
+
+    return jsondict
 
 
 @app.route("/", methods=["GET", "HEAD"])
 def home():
-    if indev == True and "understand" not in request.args:
-        return render_template("indev.html")
     if "q" in request.args:
         pp = 15
         pagenum = 0
@@ -25,25 +85,37 @@ def home():
                 pagenum = int(request.args["page"])
             except:
                 pass
-        t = time.time()
-        q = request.args["q"].lower()
+        q = request.args["q"].lower().replace("/", "")
         if q == "": return render_template("home.html")
-        q = CLEAN(q)
         print("Searching for: ", q)
-        r, a = searchall(q, pp, pagenum)
-        roundup = lambda x: x if x == int(x) else int(x) + 1
+        code = makejson(q)
+        results = dict(
+            list(code["Results"].items())[pagenum * pp:pagenum * pp + pp])
+        roundup = lambda x: int(x) if x == int(x) else int(x) + 1
         return render_template("search.html",
-                               code=r,
+                               code=code,
+                               results=results,
                                search=q,
                                word=spell(q),
                                pagenum=pagenum,
-                               total=a,
+                               len=len,
                                perpage=pp,
                                roundup=roundup,
-                               time=time.time() - t,
                                round=round)
     else:
         return render_template("home.html")
+
+
+@app.route("/api")
+def api():
+    if 'q' in request.args:
+        q = request.args["q"].lower().replace("/", "")
+        if q == "": return render_template("api.html")
+        return json.dumps(makejson(q))
+    if "part" in request.args and request.args["part"] == "specs":
+        return render_template("apispecs.html")
+    else:
+        return render_template("api.html")
 
 
 @app.route("/static/css/home.css")
@@ -54,6 +126,11 @@ def css():
 @app.route("/static/img/searchicon.png")
 def imgsi():
     return send_file("static/searchicon.png")
+
+
+@app.route("/static/img/searchiconinvert.png")
+def imgsiinverted():
+    return send_file("static/searchiconinvert.png")
 
 
 @app.route("/static/js/page.js")
@@ -69,6 +146,7 @@ def imglt():
 @app.route("/apple-touch-icon-precomposed.png")
 @app.route("/apple-touch-icon.png")
 @app.route("/favicon.ico")
+@app.route("/static/img/favicon.ico")
 def fav():
     return send_file("static/favicon.ico")
 
@@ -81,7 +159,10 @@ def index_site_page():
             note = "<h2>Please include protocol and / at the end</h2>"
         else:
             note = '<h2>DONE!</h1> <p class="des">For now this site was listed as anonymous. Login and site statistics will come in a future version. </p>'
-            if index(site) == False:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(index, site)
+                value = future.result()
+            if value == False:
                 note = "<h2>Failed: invalid or inactive site</h2>"
 
         return render_template("index.html", note=note)
@@ -89,4 +170,55 @@ def index_site_page():
         return render_template("index.html")
 
 
+@app.route("/sitemap.xml")
+def sitemap():
+    return send_file("templates/sitemap.xml")
+
+
+@app.route("/static/js/darkmode.js")
+def darkmodejs():
+    return send_file("static/darkmode.js")
+
+
+@app.route("/static/css/api.css")
+def apicss():
+    return send_file("static/api.css")
+
+
+@app.route("/static/css/darkmode.css")
+def darkcss():
+    return send_file("static/darkmode.css")
+
+
+@app.route("/Policies/termsofservice")
+def termsofservice():
+    return render_template("Policies/termsofservice.html")
+
+
+@app.route("/Policies/privacy")
+def privacypolicy():
+    return render_template("Policies/privacy.html")
+
+
+@app.route("/robots.txt")
+def robots():
+    return send_file("static/robots.txt")
+
+
+@app.after_request
+def add_headers(resp):
+    resp.headers[
+        "Content-Security-Policy"] = "script-src 'self' https://search-the-world.hg0428.repl.co"
+    resp.headers["X-Frame-Options"]="DENY"
+    resp.headers["Expires"]="6000"
+    resp.headers["Cache-Control"]="max-age=6000"
+    resp.headers["Pragma"]="no-cache"
+    resp.headers["X-Content-Type-Options"]="nosniff"
+    resp.headers["Content-Security-Policy"]="base-uri 'self'"
+    return resp
+
+
+print(index("https://replit.com"))
+#update_all_sites()
+app.jinja_env.cache = {}
 app.run("0.0.0.0", 8080)

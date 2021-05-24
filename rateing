@@ -1,0 +1,110 @@
+************* Module toolsys
+toolsys.py:14:12: W0123: Use of eval (eval-used)
+toolsys.py:25:0: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
+toolsys.py:86:4: W0702: No exception type(s) specified (bare-except)
+toolsys.py:92:4: W0603: Using the global statement (global-statement)
+toolsys.py:106:4: W0702: No exception type(s) specified (bare-except)
+toolsys.py:139:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
+toolsys.py:140:4: R0913: Too many arguments (6/5) (too-many-arguments)
+toolsys.py:161:16: W0702: No exception type(s) specified (bare-except)
+toolsys.py:167:12: W0702: No exception type(s) specified (bare-except)
+toolsys.py:177:16: W0702: No exception type(s) specified (bare-except)
+toolsys.py:183:12: W0702: No exception type(s) specified (bare-except)
+toolsys.py:205:4: W0702: No exception type(s) specified (bare-except)
+toolsys.py:229:0: R0914: Too many local variables (19/15) (too-many-locals)
+
+
+Report
+======
+240 statements analysed.
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |1      |NC         |NC         |NC          |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |1      |NC         |NC         |NC          |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|method   |4      |NC         |NC         |NC          |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|function |14     |NC         |NC         |NC          |21.43    |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |258    |81.90 |NC       |NC         |
++----------+-------+------+---------+-----------+
+|docstring |14     |4.44  |NC       |NC         |
++----------+-------+------+---------+-----------+
+|comment   |7      |2.22  |NC       |NC         |
++----------+-------+------+---------+-----------+
+|empty     |36     |11.43 |NC       |NC         |
++----------+-------+------+---------+-----------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |0     |NC       |NC         |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |NC       |NC         |
++-------------------------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |0      |NC       |NC         |
++-----------+-------+---------+-----------+
+|refactor   |4      |NC       |NC         |
++-----------+-------+---------+-----------+
+|warning    |9      |NC       |NC         |
++-----------+-------+---------+-----------+
+|error      |0      |NC       |NC         |
++-----------+-------+---------+-----------+
+
+
+
+Messages
+--------
+
++-------------------------------+------------+
+|message id                     |occurrences |
++===============================+============+
+|bare-except                    |7           |
++-------------------------------+------------+
+|too-many-locals                |1           |
++-------------------------------+------------+
+|too-many-instance-attributes   |1           |
++-------------------------------+------------+
+|too-many-arguments             |1           |
++-------------------------------+------------+
+|inconsistent-return-statements |1           |
++-------------------------------+------------+
+|global-statement               |1           |
++-------------------------------+------------+
+|eval-used                      |1           |
++-------------------------------+------------+
+
+
+
+
+-----------------------------------
+Your code has been rated at 9.46/10

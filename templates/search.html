@@ -4,34 +4,52 @@
 <head>
 	<title>{{ search }} - SearchTheWorld</title>
 	<link rel="shortcut icon" href="/favicon.ico?v=1" type="image/x-icon" />
-	<link rel="stylesheet" href="/static/css/home.css">
-  <script src="/static/js/page.js"></script>
+	<link rel="stylesheet" href="/static/css/home.css?theme=0" id="home" />
+  <link rel="stylesheet" href="/static/css/darkmode.css?theme=0" id="darkmode" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="/static/js/darkmode.js">
+	</script>
+  <meta property="og:type" content="website">
+	<meta property="og:title" content="{{ search }} - SearchTheWorld" />
+	<meta property="og:description" content="A fast and secure search engine designed for privacy and power. Made for developers and engineered to fit your needs."
+	/>
+	<meta property="og:url" content="https://Search-The-World.hg0428.repl.co/q={{ search }}" />
+  <meta property="og:site_name" content="Search The World"/>
+	<meta property="og:image" content="https://Search-The-World.hg0428.repl.co/static/img/favicon.ico" />
+  <meta name="title" content="{{ search }} - SearchTheWorld">
+	<meta name="description" content="A fast and secure search engine designed for privacy and power. Made for developers and engineered to fit your needs."
+	/>
+  <meta name="theme-color" content="#00ff00">
 </head>
 
 <body>
 	<div id="searchbar">
+    <label class="switch">
+      <input type="checkbox">
+      <span class="slider"></span>
+    </label>
 		<form>
-			<input type="text" name="q" id="search" placeholder="Search..." value="{{search}}">
+			<input type="search" name="q" id="search" placeholder="Search..." value="{{ search }}">
     </form>
     <span id="toolbar"><a class="des" href="/index">Missing a site?</a><span>
     <hr/>
     </div>
     <div class="body">
     {% if word != search %}
-      <p id="dym">Did you mean: <a href="/?q={{word}}">{{word}}</a></p>
-    {%endif%}
-    {%if code!={}%}
-      <p>{{total}} results in {{round(time, 5)}} seconds.</p>
-      {%for i in code%}
-        {%set title, description, score, url, fav = code[i]["title"], code[i]["des"], code[i]["score"], code[i]["url"], code[i]["favicon"]%}
+      <p id="dym">Did you mean: <a href="/?q={{ word }}">{{ word }}</a></p>
+    {% endif %}
+    {% if results!={} %}
+      <p>{{ code["ResultCount"] }} results in {{ round(code["Time"], 5) }} seconds.</p>
+      {% for i in results %}
+        {% set d = results[i] %}
         <div class="result">
-          <img src="{{fav}}" onerror="this.onerror=null; this.remove();"></img>
-          <strong><a href="{{url}}">{{title}}</a></strong>
-          <p>{{(description|safe)}}</p>
-          <p>Score: {{round(score)}}</p>
-          <br/>
+          <img src="{{ d["favicon"] }}" onerror="this.onerror=null; this.remove();"></img><!--<p>{{ d["link"] }}</p>-->
+          <a href="{{ d["link"] }}">{{ d["title"] }}</a>
+          <p>{{( d["description"]|safe)}}</p>
+          <!--<p>Score: {{round(d["score"])}}</p>
+          <br/>-->
         </div>
-      {%endfor%}
+      {% endfor %}
     {% else %}
       <h2 class="result" style="font-size:25px;">No more good matches 
         <p class="des">Try searching for what will apear on the site. 
@@ -39,12 +57,18 @@
         You may have simply gone over the amount of pages that there are.</p>
       </h2>
     {% endif %}
+    <span onclick="changep(-1)" class="circled" id="pagedown">-</span><span class="circled unavailable">{{ pagenum+1 }}</span><span id="pageup" onclick="changep(1)" class="circled">+</span>
+    </div>
+    <p style="display:none;" id="total">{{ roundup(code["ResultCount"]/perpage) }}</p>
+    <div class="footer">
+      <footer>
+        <p>© 2021 Projxon | All rights reserved</p>
+        <a href="/Policies/termsofservice">Terms of Service</a><br/>
+        <a href="/Policies/privacy">Privacy Policy</a><br/>
+        <a href="/api">Developer API</a>
+      </footer>
     </div>
   </body>
-  <div class="footer"><hr/>
-      <footer>Page: 
-        <form action="javascript:gotopage();" style = "display:inline" >
-          <input name="page" type="number" id="page" value="{{pagenum+1}}"></input>
-        </form> out of {{roundup(total/perpage)}}<br/><br/>© 2021 Projxon | All rights reserved</footer>
-    </div>
+  <script src="/static/js/page.js">
+	</script>
 </html>

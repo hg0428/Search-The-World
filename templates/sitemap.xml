@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+
+<url>
+  <loc>https://search-the-world.hg0428.repl.co/</loc>
+  <lastmod>2021-05-18T14:00:59-07:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>1.0</priority>
+</url>
+<url>
+  <loc>https://search-the-world.hg0428.repl.co/index</loc>
+  <lastmod>2021-05-18T08:21:54-07:00</lastmod>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>https://search-the-world.hg0428.repl.co/api</loc>
+  <lastmod>2021-05-18T08:21:54-07:00</lastmod>
+  <changefreq>monthly</changefreq>
+</url>
+
+<url>
+  <loc>https://search-the-world.hg0428.repl.co/api?part=specs</loc>
+  <lastmod>2021-05-18T08:21:54-07:00</lastmod>
+  <changefreq>monthly</changefreq>
+</url>
+<url>
+  <loc>https://search-the-world.hg0428.repl.co/Policies/termsofservice</loc>
+  <lastmod>2021-05-18T08:21:54-07:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.4</priority>
+</url>
+<url>
+  <loc>https://search-the-world.hg0428.repl.co/Policies/privacy</loc>
+  <lastmod>2021-05-18T08:21:54-07:00</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.4</priority>
+</url>
+</urlset>
