@@ -1,3 +1,6 @@
+* {
+  transition:0.5s;
+}
 .card {
     display:inline-block;
     text-align: center;
@@ -6,7 +9,7 @@
     box-shadow:0 0 50px 20px rgba(65,60,65,.2);
     width:250px;
     height:250px;
-    transition:transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+    transition:0.3s;
     margin:50px;
     padding:10px;
     background-color:rgb(250,250,250);

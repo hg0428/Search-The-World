@@ -21,8 +21,8 @@ app = Flask("Search The World")
 from flask_compress import Compress
 
 
-def replacefromto(string, start, end, replacement):
-    return f"{string[:start]}{replacement}{string[end:]}"
+#def replacefromto(string, start, end, replacement):
+#    return f"{string[:start]}{replacement}{string[end:]}"
 
 
 COMPRESS_MIMETYPES = [
@@ -35,7 +35,6 @@ searches = listdir("searches/")
 for f in searches:
     remove("searches/" + f)
 searches = []
-themes = {}
 
 
 #[pagenum * amount:pagenum * amount + amount]

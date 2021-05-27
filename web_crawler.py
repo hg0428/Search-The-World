@@ -43,6 +43,7 @@ def getData(url):
         return False
     content_type = responce.headers.get('Content-Type').lower()
     if "html" not in content_type: return False
+    if responce.status!=200:return False;print(False)
     return f
 
 

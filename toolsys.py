@@ -72,7 +72,7 @@ def parseText(text, things):
                 s = ""
             if item == CLEAN(
                     s.lower()) and not start.startswith(s) and do == True:
-                newtext += f"{start} {s} {end}"
+                newtext += f"{start}{s}{end}"
                 s = ""
         newtext += s
         text = newtext
@@ -152,7 +152,7 @@ class Result:
         #print("Formatted:",self.formatted)
     def getreflinks(self):
         for up in get_sub_domains(self.url):
-            up = parseurl(up)
+            up = parseurl(up.lower())
             path = make_path(up.netloc)
             if not ospath.exists(path):
                 try:
@@ -168,7 +168,8 @@ class Result:
             open(path + "refs", "w+").write('\n'.join(r))
         for l in self.soup.find_all('a'):
             l = l.get("href")
-            up = parseurl(urljoin(self.urlp.geturl(), l))
+            if l==None:continue
+            up = parseurl(urljoin(self.urlp.geturl().lower(), l.lower()))
             path = make_path(up.netloc)
             if not ospath.exists(path):
                 try:
