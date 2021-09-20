@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup as bs
 import time
 from bs4.element import Comment
 http = PoolManager()
+import html_text
 
 def save(f, data: list, sep: str):
     open(f, "w+").write(sep.join(data))
@@ -15,37 +16,35 @@ def tag_visible(element):
     ]:
         return False
     if isinstance(element, Comment):
-        return True
+        return False
     return True
 
 
-def GetText(soup):
-    texts = soup.findAll(text=True)
-    visible_texts = filter(tag_visible, texts)
-    return u" ".join(t.strip() for t in visible_texts)
+def GetText(data):
+	return html_text.extract_text(data, guess_layout=False)
 
 
 def getData(url):
-    trys = 0
-    while trys < 10:
-        try:
-            responce  = http.request("GET",url, headers={"Identity": "Projxon Web Crawler 01", "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.3 Safari/605.1.15"})
-            break
-        except:
-            time.sleep(0.5)
-            trys += 1
-    if trys >= 10: return False
-    try:
-        f = str(responce.read(decode_content=True).decode('utf-8'))
-        f=responce.data
-    except Exception as e:
-        print(e)
-        return False
-    content_type = responce.headers.get('Content-Type').lower()
-    if "html" not in content_type: return False
-    if responce.status!=200:return False;print(False)
-    return f
-
+  try:
+    response = http.request(
+		    "GET",
+		    url,
+		    headers={
+		        "Identity":
+		        "Projxon Web Crawler 01",
+		        "User-Agent":
+		        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15"
+		    })
+  except:
+    return False
+  #try:
+  f = response.data.decode()
+  #except:
+  #  return False
+  content_type = response.headers.get('Content-Type').lower()
+  if "html" not in content_type: return False
+  if response.status != 200: return False
+  return f
 
 def getTitle(soup, urlp):
     try:

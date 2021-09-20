@@ -1,0 +1,56 @@
+{
+    "meta": [{
+        "data": "content",
+        "requirements": {
+            "name": "description"
+        },
+        "save": true,
+        "name": "description"
+    }, {
+        "data": "content",
+        "requirements": {
+            "name": "viewport"
+        },
+        "save": true,
+        "name": "viewport"
+    }, {
+        "data": "content",
+        "requirements": {
+            "name": "theme-color"
+        },
+        "save": true,
+        "name": "theme-color"
+    }, {
+        "data": "charset",
+        "requirements": {},
+        "save": true,
+        "name": "charset"
+    }, {
+        "data": "content",
+        "requirements": {
+            "name": "rating"
+        },
+        "save": true,
+        "name": "rating"
+    }, {
+        "data": "content",
+        "requirements": {
+            "name": "keywords"
+        },
+        "save": true,
+        "name": "keywords"
+    }, {
+        "data": "content",
+        "requirements": {
+            "name": "contains-ads"
+        },
+        "save": true,
+        "name": "contains-ads"
+    }],
+    "title": [{
+        "data": "",
+        "requirements": {},
+        "save": true,
+        "name": "title"
+    }]
+}

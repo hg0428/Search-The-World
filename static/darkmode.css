@@ -1,9 +1,17 @@
+* {
+  transition: .5s;
+  -webkit-transition: .5s;
+}
 :root {
+  color-scheme: light dark;
   --main-back: rgb(204,204,204);
+  --shadow-color: rgba(64,60,67,.16);
   --slider-color:white;
+  
 }
 [data-theme=dark] {
   --main-back: rgb(51,51,51);
+  --shadow-color:rgba(191,195,198,.16);
   --slider-color:black;
 }
 .switch {
@@ -22,6 +30,7 @@
 }
 
 .slider {
+  box-shadow: 0px 0px 3.33px 1.33px var(--shadow-color);
   border-radius: 50px;
   position: absolute;
   cursor: pointer;
@@ -30,8 +39,7 @@
   right: 0;
   bottom: 0;
   background-color: var(--main-back);
-  -webkit-transition: .5s;
-  transition: .5s;
+
 }
 
 .slider:before {
@@ -42,12 +50,10 @@
   left: 4px;
   bottom: 4px;
   background-color: var(--slider-color);
-  -webkit-transition: .4s;
-  transition: .4s;
 }
 
 input:checked + .slider {
-  background-color: rgb(33, 150, 243);
+  background-color: rgb(0, 122, 255);
 }
 
 input:focus + .slider {

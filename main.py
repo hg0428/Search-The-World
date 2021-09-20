@@ -1,4 +1,5 @@
-from toolsys import getsites, index, searchall
+import htmlparse
+from toolsys import getsites, index, searchall, update_all_sites, getwords, parseText
 from os import listdir, remove
 from flask import request, render_template, Flask, send_file
 import concurrent.futures
@@ -8,6 +9,7 @@ import json
 ## https://yoast.com/what-is-structured-data/
 ## https://schema.org/
 ## https://yoast.com/what-is-structured-data/
+## https://gist.github.com/lancejpollard/1978404
 ## !^^!Use Those!^^!
 
 
@@ -50,6 +52,7 @@ def makejson(q):
     jsondict = {
         "ResultCount": len(code),
         "Time": time() - t,
+        "Keywords":getwords(q),
         "Information": {
             "Main": {},
             "Descriptions": {}
@@ -58,12 +61,13 @@ def makejson(q):
     }
     for i in code:
         d = code[i]
-        jsondict["Results"][d["title"]] = {
+        jsondict["Results"][d["link"]] = {
             "score": d["score"],
-            "description": d["des"],
+            "description": d["description"],
             "title": d["title"],
-            "link": d["url"],
-            "favicon": d["favicon"]
+            "link": d["link"],
+            "favicon": d["favicon"],
+            "images":d["images"]
         }
 
     return jsondict
@@ -71,19 +75,18 @@ def makejson(q):
 
 @app.route("/", methods=["GET", "HEAD"])
 def home():
+    #htmlparse.GetInfo("https://Search-The-World.hg0428.repl.co")
     if "q" in request.args:
         pp = 15
         pagenum = 0
         if "pp" in request.args and request.args["pp"] != "0":
             try:
                 pp = int(request.args["pp"])
-            except:
-                pass
+            except:pass
         if "page" in request.args:
             try:
                 pagenum = int(request.args["page"])
-            except:
-                pass
+            except:pass
         q = request.args["q"].lower().replace("/", "")
         if q == "": return render_template("home.html")
         print("Searching for: ", q)
@@ -100,7 +103,7 @@ def home():
                                len=len,
                                perpage=pp,
                                roundup=roundup,
-                               round=round)
+                               round=round, parseText=parseText)
     else:
         return render_template("home.html")
 
@@ -137,9 +140,9 @@ def pagejs():
     return send_file("static/page.js")
 
 
-@app.route("/static/img/lt.svg")
+@app.route("/static/img/lt.png")
 def imglt():
-    return send_file("static/lt.svg")
+    return send_file("static/lt.png")
 
 
 @app.route("/apple-touch-icon-precomposed.png")
@@ -163,7 +166,7 @@ def index_site_page():
                 value = future.result()
             if value == False:
                 note = "<h2>Failed: invalid or inactive site</h2>"
-
+            elif type(value)==str:note=value
         return render_template("index.html", note=note)
     else:
         return render_template("index.html")
@@ -208,16 +211,18 @@ def robots():
 def add_headers(resp):
     resp.headers[
         "Content-Security-Policy"] = "script-src 'self' https://search-the-world.hg0428.repl.co"
-    resp.headers["X-Frame-Options"]="DENY"
-    resp.headers["Expires"]="6000"
-    resp.headers["Cache-Control"]="max-age=6000"
+    #resp.headers["X-Frame-Options"]="DENY"
+    resp.headers["Expires"]="4000"
+    resp.headers["Cache-Control"]="max-age=4000"
     resp.headers["Pragma"]="no-cache"
     resp.headers["X-Content-Type-Options"]="nosniff"
     resp.headers["Content-Security-Policy"]="base-uri 'self'"
     return resp
 
 
-print(index("https://replit.com"))
+#print(index("https://replit.com"))
+
 #update_all_sites()
+#getsites()
 app.jinja_env.cache = {}
 app.run("0.0.0.0", 8080)

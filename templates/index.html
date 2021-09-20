@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
     <title>Index My Site – Search The World</title>
+    <meta name="theme-color" content="#f5f5f5"/>
     <link rel="shortcut icon" href="/favicon.ico?v=1" type="image/x-icon"/>
-    <link rel="stylesheet" href="/static/css/home.css?theme=0"id="home">
+    <link rel="stylesheet" href="/static/css/home.css?theme=0" id="home">
     <link rel="stylesheet" href="/static/css/darkmode.css?theme=0" id="darkmode" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -20,24 +21,26 @@
         window.location.replace("https://search-the-world.hg0428.repl.co/");
       }
     </script>
-    <script src="/static/js/darkmode.js"></script>
   </head>
   <body>
     <label class="switch">
   <input type="checkbox">
   <span class="slider"></span>
   </label>
-    <button class="back" onclick="back();"><image src="/static/img/lt.svg" width="30" height="25"></image></button>
+    <button class="back" onclick="back();"><image src="/static/img/lt.png" width="25" height="30"/></button>
     <center><h1>Index My Site</h1>
     <p class="des">Please include protocol and / at the end for best results.</p>
     <br/>
     <form method="POST">
       <label for="site">URL: </label>
-      <input type="text" name="site" placeholder="URL..." id="site"></input>
+      <input type="text" name="site" placeholder="URL..." id="site"/>
       <br/>
       <br/>
-      <input type="submit" id="sub" value="Index!"></input>
+      <input type="submit" id="sub" value="Index!"/>
       {{(note|safe)}}
     </form></center>
+    <script src="/static/js/darkmode.js">
+
+    </script>
   </body>
 </html>
