@@ -3,7 +3,11 @@
   <head>
     <title>Index My Site – Search The World</title>
     <meta name="theme-color" content="#f5f5f5"/>
-    <link rel="shortcut icon" href="/favicon.ico?v=1" type="image/x-icon"/>
+    <link rel="shortcut icon" href="/favicon.ico?v=2" type="image/x-icon"/>
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="manifest" href="/site.webmanifest">
     <link rel="stylesheet" href="/static/css/home.css?theme=0" id="home">
     <link rel="stylesheet" href="/static/css/darkmode.css?theme=0" id="darkmode" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,7 +40,7 @@
       <input type="text" name="site" placeholder="URL..." id="site"/>
       <br/>
       <br/>
-      <input type="submit" id="sub" value="Index!"/>
+      <input type="submit" id="sub" value="Index!"/><br/>
       {{(note|safe)}}
     </form></center>
     <script src="/static/js/darkmode.js">

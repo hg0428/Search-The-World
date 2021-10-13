@@ -7,16 +7,45 @@ try:
 	from BeautifulSoup import BeautifulSoup, ResultSet
 except ImportError:
 	from bs4 import BeautifulSoup, ResultSet
-from urllib.parse import urlparse, urljoin, urlunparse
+from urllib.parse import urljoin, urlparse
 import json
 from bs4.element import Comment
-import re
 import time
 import requests
+import extruct
+
+
+def extract_metadata(text, up):
+	return extruct.extract(text,
+	                       base_url=up.netloc,
+	                       uniform=True,
+	                       syntaxes=['json-ld'])
+
+
+metaDataTypes = {
+    "Organization": ["name", "url"],
+    "VideoGame": ["name", "url", "author", "genre", "aggregateRating", "image"]
+}
+
+
+def parse_metadata(text, up):
+	print("start")
+	Result={}
+	metadata = extract_metadata(text, up)['json-ld']
+	print(metadata)
+	for md in metadata:
+		mdtype=md["@type"]
+		if mdtype in metaDataTypes: 
+			for k,v in md.items():
+				if k in metaDataTypes[mdtype]:
+					Result[k]=v
+	print(Result)
+	return Result
+					
+				
 
 
 def image_detector(src):
-	#print(src)
 	r = requests.post(
 	    "https://api.deepai.org/api/nsfw-detector",
 	    data={
@@ -25,7 +54,7 @@ def image_detector(src):
 	    headers={'api-key': 'd0b362a7-84c8-48f4-b7c4-a6ffb078972a'})
 	j = r.json()
 	#print(type(j), j)
-	if 'err' in j:return 0.2
+	if 'err' in j: return 0.2
 	return j["output"]["nsfw_score"]
 
 
@@ -119,26 +148,25 @@ def GetInfo(website, up):
 					continue
 			if tag['save'] == True:
 				saved[tag['name']] = data
-	unfiltered_img=soup.findAll('img')
-	safety = 1
+	unfiltered_img = soup.findAll('img')
+	safety = 0
 	images = []
 	videos = []
-	if len(unfiltered_img)>0:
+	if len(unfiltered_img) > 0:
 		for img in unfiltered_img:
 			src = urljoin(website, img.get('src'))
-			if src==website:continue
+			if src == website: continue
 			a = image_detector(src)
 			safety += a
-			if a < 0.2:
+			if a < 0.3:
 				images.append(src)
 		for vid in soup.findAll('video'):
 			videos.append(urljoin(website, vid.get('src')))
-		
-		safety=safety/len(unfiltered_img)
-		if safety>0.5:
+		safety = safety / len(unfiltered_img)
+		if safety > 0.5:
 			print("UNSAFE")
 			return "UNSAFE: Inappropiate images dectected; contact @./hg0428#6088 on discord if you believe this is a mistake."
-	saved["safety"]=safety
+	saved["safety"] = safety
 	saved["images"] = images
 	saved["videos"] = videos
 	saved["time-of-indexing"] = time.time()
@@ -147,10 +175,13 @@ def GetInfo(website, up):
 	saved["favicon"] = getFavicon(soup, website)
 	saved["addr"] = up.netloc
 	print(len(saved) - 3)
+	saved["metaData"]= parse_metadata(f_data, up)
 	return saved, soup
 
 
 #with open('apple.txt', 'w+') as outfile:
-#   json.dump(GetInfo("https://apple.com/"), outfile)
+#   json.dump(, outfile)
 #GetInfo("https://replit.com/")
 #GetInfo("https://httpimgs.compilingcoder.repl.co/")
+#GetInfo("https://nomanssky.com/",urlparse("https://nomanssky.com/"))
+

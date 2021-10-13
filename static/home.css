@@ -169,12 +169,6 @@ input[type="search"]::-webkit-search-decoration {
 a:hover {
   text-decoration: underline;
 }
-.TAB {
-	color:var(--n-i-main-color);
-}
-.active-tab {
-	text-decoration: underline;
-}
 .result a:after {
   padding: 50px;
   content: '';
@@ -318,4 +312,14 @@ strong {
 #noscroll {
   position:absolute;
   bottom:0;
+}
+#stw-title {
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: url(/static/img/Back.png);
+	background-size:55px;
+	font-size:45px;
+  font-family: OCR A Std, monospace;
+  text-shadow: 3px 3px 6px var(--shadow-color);
+  
 }

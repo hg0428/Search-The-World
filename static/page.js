@@ -46,12 +46,3 @@ document.onload = function() {
   console.log("load");
   checker();
 };
-console.log("on!");
-const tabs = ["all", "images"];
-
-function TabSwitch(tab) {
-  document.getElementById("tab-" + tab).classList.add("active-tab");
-  for (i = 0; i < tabs.length; i++) {
-    document.getElementById("tab-" + tabs[i]).classList.remove("active-tab");
-  }
-};

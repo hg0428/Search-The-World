@@ -3,7 +3,11 @@
 
 <head>
 	<title>{{ search }} - SearchTheWorld</title>
-	<link rel="shortcut icon" href="/favicon.ico?v=1" type="image/x-icon" />
+	<link rel="shortcut icon" href="/favicon.ico?v=2" type="image/x-icon" />
+	    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="manifest" href="/site.webmanifest">
 	<link rel="stylesheet" href="/static/css/home.css?theme=0" id="home" />
 	<link rel="stylesheet" href="/static/css/darkmode.css?theme=0" id="darkmode" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -30,11 +34,9 @@
 		<form>
 			<input type="search" name="q" id="search" placeholder="Search..." value="{{ search }}">
     </form>
-    <span id="toolbar"><!--
-    	<a class="tab des active-tab" id="tab-all" href="javascript:TabSwitch('all');">ALL</a>
-    	<a class="tab des" id="tab-images" href="javascript:TabSwitch('images');">Images</a>-->
+    <span id="toolbar">
     	<a class="des" href="/index">Missing a site?</a>
-    	<span>
+    </span>
   </div>
     <div class="body" id="all-section">
     {% if word != search %}
@@ -45,7 +47,7 @@
       {% for i in results %}
         {% set d = results[i] %}
         <div class="result">
-          <img src="{{ d["favicon"] }}" onerror="this.onerror=null; this.remove();"></img><!--<p>{{ d["link"] }}</p>-->
+          <img src="{{ d["favicon"] }}" onerror="this.onerror=null; this.remove();" ></img><!--<p>{{ d["link"] }}</p>-->
           <a href="{{ d["link"] }}">{{ d["title"] }}</a>
           <p>{{( parseText(d["description"],code["Keywords"])|safe)}}</p>
           <!--<p>Score: {{round(d["score"])}}</p>

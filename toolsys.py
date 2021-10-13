@@ -1,13 +1,12 @@
 from urllib.parse import urlparse as parseurl, urljoin, urlunparse
 import time
 from os import listdir, path as ospath, makedirs
-from bs4 import BeautifulSoup as bs
+#from bs4 import BeautifulSoup as bs
 from re import findall
 import htmlparse
 import json
 
 DATA = {}
-from web_crawler import getData, getTitle, getFavicon, GetText
 from sys import setswitchinterval, getsizeof
 from htmlparse import GetInfo
 
@@ -21,7 +20,6 @@ def make_path(netloc, p="indexed/"):
 	folder = netloc.split(".")
 	folder.reverse()
 	path = p + '/'.join(folder) + "/"
-	print(path)
 	return path
 
 
@@ -51,7 +49,7 @@ def CLEAN(text):
 
 
 def getwords(s):
-	return set(findall(r"[\w']+", s))
+	return tuple(set(findall(r"[\w']+", s)))
 
 
 def parseText(text, things):
@@ -198,7 +196,7 @@ def index(url):
 
 def CreateDescription(text, keywords):
 	keywords = no_stop_words(keywords)
-	totallength = 375
+	totallength = 325
 	num = 0
 	d = {}
 	for i in text:
@@ -249,12 +247,12 @@ def getscore(data, query, words):
 	if len(text) > 250: metascore + 1
 	metascore *= len(data)
 	des=None
-	if query not in description.lower():
+	if query not in description.lower() and query not in title.lower() and query not in link.lower():
 		des = CreateDescription(text, words)
 	if des==None or des=="":
 		if description=="":des=text[:250]
 		else:des=description[:350]
-		
+	score+=metascore*len(data["ref"])
 	#print(score + metascore, title)
 	return score + metascore, des
 
@@ -268,7 +266,7 @@ def searchall(q):
 	l = {}
 	for s in DATA:
 		data = DATA[s]
-		r = getscore(data, q, words)
+		r=getscore(data, q, words)
 		if r == False: continue
 		score, des = r
 		l[data["link"]] = {
@@ -277,7 +275,8 @@ def searchall(q):
 		    "title": data["title"],
 		    "link": data["link"],
 		    "favicon": data["favicon"],
-		    "images": data['images']
+		    "images": data['images'],
+		    "data":data
 		}
 	for key, value in sorted(l.items(),
 	                         reverse=True,
@@ -288,7 +287,7 @@ def searchall(q):
 	return codedict
 
 
-def update_all_sites(iters=3):
+def update_all_sites(iters=3, crawl=False):
 	print("Starting Update...")
 	i = 0
 	while i < iters:
