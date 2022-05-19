@@ -6,27 +6,32 @@
     <link rel="stylesheet" href="/static/css/api.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/darkmode.css?theme=0" id="darkmode" />
+    <script src="https://CSS-Library.hg0428.repl.co/script.js"></script>
   </head>
   <body>
+    <label class="switch">
+      <input type="checkbox" />
+      <span class="slider"></span>
+    </label>
     <h1>Using the API</h1>
     <p>&nbsp;&nbsp;&nbsp;&nbsp;The API is very easy to use and will not take long to get used to. In this tutorial I will be giving code examples in python and javascript.<br/>&nbsp;&nbsp;&nbsp;&nbsp;
-      The api will respond to GET requests to /api. Simply send a GET request to <span class="code">/api?q=[yourqueryhere>]</span> and replace <span class="code">[yourqueryhere]</span> with what ever the query is. Within seconds you will get a responce of JSON that includes results and more information.<br/>&nbsp;&nbsp;&nbsp;&nbsp;The JSON will have many keys, including <span class="code">ResultCount</span>, <span class="code">Information</span>, and <span class="code">Results</span>. ResultCount is an int that is equal to the number of results. Because this search engine is not done yet, you should get few results. The Results key contains all of the results in the following format: <br/>
-      <div class="code">
-        "Title":{<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;"score":0,<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;"description":"description",<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;"title":"Title",<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;"link":"link",<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;"favicon":"favicon"<br/>
-        },
-      </div><br/>
+      The api will respond to GET requests to /api. Simply send a GET request to <code>/api?q=[yourqueryhere>]</code> and replace <code>[yourqueryhere]</code> with what ever the query is. Within seconds you will get a responce of JSON that includes results and more information.<br/>&nbsp;&nbsp;&nbsp;&nbsp;The JSON will have many keys, including <code>ResultCount</code>, <code>Information</code>, and <code>Results</code>. ResultCount is an int that is equal to the number of results. Because this search engine is not done yet, you should get few results. The Results key contains all of the results in the following format: <br/>
+      <pre><code>
+"Title":{
+  "score":0,
+  "description":"description",
+  "title":"Title",
+  "link":"link",
+  "favicon":"favicon"
+},
+      </code></pre><br/>
       &nbsp;&nbsp;&nbsp;&nbsp;I think that is self-explainatory. The score is always an int and it represents the site's search score. The results are sorted by highest to lowest score.
     </p>
     <h1>Adding Python</h1>
     <p>
       &nbsp;&nbsp;&nbsp;&nbsp;In this section I am going to explain how to work with this API using python and urllib3. 
     </p>
-    <pre class="code">
+    <pre><code>
 # we will import the PoolManager to create the http object
 # import json to quickly parse our json script
 from urllib3 import PoolManager
@@ -38,7 +43,7 @@ def search(q):
   # Send the request and get the responce and get out the JSON
   resp = http.request("GET",f"https://search-the-world.hg0428.repl.co/api?q={q}")
   code = json.loads(resp.data.decode('utf-8'))
-</pre><br/>
+</code></pre><br/>
     <p>
       &nbsp;&nbsp;&nbsp;&nbsp;Ok, so now we got the data and turned it into a dictionary, how do we make it into something that the user wants to read? This is mostly formatting and your preference, so I am not going to cover it here.
     </p>

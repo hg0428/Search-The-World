@@ -14,7 +14,11 @@ import json
 ##REVERT TEST
 
 #sitemap datetime format: YYYY-MM-DDThh:mm:ssTZD (eg 2021-05-18T13:58:54-7:00)
-
+def fix(f="htmlparse.py"):
+	r=open(f, "r").read().replace("  ", "	")
+	open(f, "w+").write(r)
+	print("DONE!")
+fix()
 #Also make better descriptions!
 spell = Speller(fast=True)
 getsites()
@@ -52,7 +56,7 @@ def makejson(q):
     jsondict = {
         "ResultCount": len(code),
         "Time": time() - t,
-        "Keywords":getwords(q),
+        "Keywords":list(getwords(q)),
         "Information": {
             "Main": {},
             "Descriptions": {}
@@ -61,14 +65,7 @@ def makejson(q):
     }
     for i in code:
         d = code[i]
-        jsondict["Results"][d["link"]] = {
-            "score": d["score"],
-            "description": d["description"],
-            "title": d["title"],
-            "link": d["link"],
-            "favicon": d["favicon"],
-            "images":d["images"]
-        }
+        jsondict["Results"][d["link"]] = code[i]
 
     return jsondict
 
@@ -185,6 +182,9 @@ def darkmodejs():
 @app.route("/static/css/api.css")
 def apicss():
     return send_file("static/api.css")
+@app.route("/static/css/Home-beta.css")
+def betacss():
+    return send_file("static/Home-beta.css")
 
 
 @app.route("/static/css/darkmode.css")

@@ -11,6 +11,8 @@ flask = "^1.1.2"
 autocorrect = "^2.3.0"
 flask-compress = "^1.9.0"
 html-text = "^0.5.2"
+cssutils = "^2.3.0"
+quart = "^0.16.2"
 
 [tool.poetry.dev-dependencies]
 

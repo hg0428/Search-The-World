@@ -21,7 +21,6 @@ def make_path(netloc, p="indexed/"):
 	folder = netloc.split(".")
 	folder.reverse()
 	path = p + '/'.join(folder) + "/"
-	print(path)
 	return path
 
 
@@ -277,7 +276,8 @@ def searchall(q):
 		    "title": data["title"],
 		    "link": data["link"],
 		    "favicon": data["favicon"],
-		    "images": data['images']
+		    "images": data['images'],
+				'meta':data
 		}
 	for key, value in sorted(l.items(),
 	                         reverse=True,

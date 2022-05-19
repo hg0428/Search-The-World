@@ -1,6 +1,5 @@
 <!Doctype html>
 <html>
-
 <head>
 	<title>{{ search }} - SearchTheWorld</title>
 	<link rel="shortcut icon" href="/favicon.ico?v=1" type="image/x-icon" />
@@ -28,23 +27,23 @@
       <span class="slider"></span>
     </label>
 		<form>
-			<input type="search" name="q" id="search" placeholder="Search..." value="{{ search }}">
+			<input type="search" name="q" id="search" placeholder="Search..." value="{{ search }}" pattern="[A-Za-z0-9 ]*">
     </form>
     <span id="toolbar"><!--
     	<a class="tab des active-tab" id="tab-all" href="javascript:TabSwitch('all');">ALL</a>
     	<a class="tab des" id="tab-images" href="javascript:TabSwitch('images');">Images</a>-->
     	<a class="des" href="/index">Missing a site?</a>
-    	<span>
-  </div>
+		</span></div>
     <div class="body" id="all-section">
     {% if word != search %}
       <p id="dym">Did you mean: <a href="/?q={{ word }}">{{ word }}</a></p>
     {% endif %}
     {% if results!={} %}
       <p>{{ code["ResultCount"] }} results in {{ round(code["Time"], 5) }} seconds.</p>
-      {% for i in results %}
+			{% for i in results %}
         {% set d = results[i] %}
         <div class="result">
+					
           <img src="{{ d["favicon"] }}" onerror="this.onerror=null; this.remove();"></img><!--<p>{{ d["link"] }}</p>-->
           <a href="{{ d["link"] }}">{{ d["title"] }}</a>
           <p>{{( parseText(d["description"],code["Keywords"])|safe)}}</p>
@@ -56,7 +55,7 @@
       <h2 class="result" style="font-size:25px;">No more good matches 
         <p class="des">Try searching for what will apear on the site. 
         <br/>Also, check spelling and make sure its in English or another common language. <br/>
-        You may have simply gone over the amount of pages that there are.</p>
+        </p>
       </h2>
     {% endif %}
     <span onclick="changep(-1)" class="circled" id="pagedown">-</span><span class="circled unavailable">{{ pagenum+1 }}</span><span id="pageup" onclick="changep(1)" class="circled">+</span>
@@ -64,15 +63,13 @@
     <p style="display:none;" id="total">{{ roundup(code["ResultCount"]/perpage) }}</p>
     <div class="footer">
       <footer>
-        <p>© 2021 Projxon | All rights reserved</p>
+        <p>© 2022 Projxon | All rights reserved</p>
         <a href="/Policies/termsofservice">Terms of Service</a><br/>
         <a href="/Policies/privacy">Privacy Policy</a><br/>
         <a href="/api">Developer API</a>
       </footer>
     </div>
     <script src="/static/js/page.js">
-	</script><script src="/static/js/darkmode.js">
-
-    </script>
+	</script><script src="/static/js/darkmode.js"></script>
   </body>
 </html>
