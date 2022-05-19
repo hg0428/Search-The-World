@@ -48,10 +48,7 @@ def GetData(url, contenType="html"):
 	#try:
 	f = response.data
 	if f == False: return False
-	#except:
-	#	return False
-	content_type = response.headers.get('Content-Type')
-	if content_type:
+	if content_type := response.headers.get('Content-Type'):
 		content_type = content_type.lower()
 		if contenType not in content_type: return False
 	if response.status != 200: return False
@@ -70,8 +67,7 @@ def tag_visible(element):
 
 def GetText(data):
 	open("testtxt", "w+").write(data)
-	a = html_text.extract_text(data, guess_layout=False)
-	return a
+	return html_text.extract_text(data, guess_layout=False)
 
 
 def getTitle(soup, urlp):
@@ -88,8 +84,7 @@ def getFavicon(soup, site):
 		icon_link = soup.find("link", rel="icon")
 	if icon_link is None:
 		return urljoin(site, '/favicon.ico')
-	favicon = urljoin(site, icon_link["href"])
-	return favicon
+	return urljoin(site, icon_link["href"])
 
 
 def GetInfo(website, up):
@@ -123,11 +118,10 @@ def GetInfo(website, up):
 				saved[tag['name']] = data
 	if "theme-color" not in saved:
 		#saved["theme-color"]
-		sheets = []
-		for styletag in soup.findAll('style'):
-				if not styletag.string:
-						continue
-				sheets.append(cssutils.parseStyle(styletag.string))
+		sheets = [
+		    cssutils.parseStyle(styletag.string)
+		    for styletag in soup.findAll('style') if styletag.string
+		]
 		for styletag in soup.findAll('link', type='text/css'):
 				CSSData=GetData(styletag.href, "")
 				sheets.append(cssutils.parseStyle(CSSData))
@@ -145,9 +139,8 @@ def GetInfo(website, up):
 			safety += a
 			if a < 0.2:
 				images.append(src)
-		for vid in soup.findAll('video'):
-			videos.append(urljoin(website, vid.get('src')))
-		
+		videos.extend(
+		    urljoin(website, vid.get('src')) for vid in soup.findAll('video'))
 		safety=safety/len(unfiltered_img)
 		if safety>0.5:
 			print("UNSAFE")

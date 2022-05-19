@@ -20,8 +20,7 @@ MAX_SPACE = 4000000000  # in bytes
 def make_path(netloc, p="indexed/"):
 	folder = netloc.split(".")
 	folder.reverse()
-	path = p + '/'.join(folder) + "/"
-	return path
+	return p + '/'.join(folder) + "/"
 
 
 def get_sub_domains(url):
@@ -92,18 +91,12 @@ def getItems(text):
 
 def no_stop_words(words):
 	global stopwords
-	content = [w for w in words if w.lower() not in stopwords]
-	return content
+	return [w for w in words if w.lower() not in stopwords]
 
 
 def hascommon(i1, i2):
-	a = []
-	for i1s in i1:
-		if i1s in i2: a.append(i1s)
-	if a == []:
-		return False
-	else:
-		return a
+	a = [i1s for i1s in i1 if i1s in i2]
+	return a or False
 
 
 def getsites(path="indexed/"):
@@ -117,7 +110,7 @@ def getsites(path="indexed/"):
 			text = json.load(open(path + i))
 			#saves in memory if it has space, else it tells it to retreve it from files when needed
 			test = {"file": path + i, "ref": refs}
-			test.update(text)
+			test |= text
 			DATA[path + i] = test
 
 		elif not ospath.isfile(path + i):
@@ -129,8 +122,7 @@ class Result:
 		self.soup, self.urlp, self.path, self.formatted = soup, urlp, path, ""
 		self.link = link
 		self.url = urlunparse(self.urlp)
-		if urlp.path == "": self.urlpath = "/"
-		else: self.urlpath = urlp.path
+		self.urlpath = "/" if urlp.path == "" else urlp.path
 		if not self.urlpath.endswith("/"): self.urlpath += "/"
 		self.getreflinks()
 
@@ -144,15 +136,15 @@ class Result:
 				except:
 					pass
 			try:
-				r = open(path + "refs").read().split("\n")
+				r = open(f"{path}refs").read().split("\n")
 				if self.url not in r:
 					r.append(self.url)
 			except:
 				r = [self.url]
-			open(path + "refs", "w+").write('\n'.join(r))
+			open(f"{path}refs", "w+").write('\n'.join(r))
 		for l in self.soup.find_all('a'):
 			l = l.get("href")
-			if l == None: continue
+			if l is None: continue
 			up = parseurl(urljoin(self.urlp.geturl().lower(), l.lower()))
 			path = make_path(up.netloc)
 			if not ospath.exists(path):
@@ -161,12 +153,12 @@ class Result:
 				except:
 					pass
 			try:
-				r = open(path + "refs").read().split("\n")
+				r = open(f"{path}refs").read().split("\n")
 				if self.url not in r:
 					r.append(self.url)
 			except:
 				r = [self.url]
-			open(path + "refs", "w+").write('\n'.join(r))
+			open(f"{path}refs", "w+").write('\n'.join(r))
 
 	def write(self, info):
 		return json.dump(info, open(self.path.lower(), "w+"))
@@ -174,9 +166,8 @@ class Result:
 
 def index(url):
 	urlp = parseurl(url)
-	url = urlp.scheme + "://" + urlp.netloc + urlp.path
-	if urlp.path == "": urlpath = "/"
-	else: urlpath = urlp.path
+	url = f"{urlp.scheme}://{urlp.netloc}{urlp.path}"
+	urlpath = "/" if urlp.path == "" else urlp.path
 	path = make_path(urlp.netloc)
 	A = htmlparse.GetInfo(url, urlp)
 	if A == False: return False
@@ -197,20 +188,15 @@ def index(url):
 
 def CreateDescription(text, keywords):
 	keywords = no_stop_words(keywords)
-	totallength = 375
-	num = 0
 	d = {}
-	for i in text:
-		key = 0
+	totallength = 375
+	for num, i in enumerate(text):
 		des = text[num:totallength + num]
 		#print(des.find(" ") - des.rfind(" "))
 		des = des[des.find(" "):des.rfind(" ")]
-		#print(des)
-		for word in keywords:
-			key += des.lower().count(word)
+		key = sum(des.lower().count(word) for word in keywords)
 		if key > 0:
 			d[key] = (num + des.find(" "), num + des.rfind(" "))
-		num += 1
 	d = sorted(d.items(), reverse=True)
 	#print(d)
 	for k, v in d:
@@ -247,13 +233,9 @@ def getscore(data, query, words):
 	if description != "": metascore += 0.5
 	if len(text) > 250: metascore + 1
 	metascore *= len(data)
-	des=None
-	if query not in description.lower():
-		des = CreateDescription(text, words)
-	if des==None or des=="":
-		if description=="":des=text[:250]
-		else:des=description[:350]
-		
+	des = None if query in description.lower() else CreateDescription(text, words)
+	if des is None or des == "":
+		des = text[:250] if description=="" else description[:350]
 	#print(score + metascore, title)
 	return score + metascore, des
 
@@ -263,7 +245,6 @@ def searchall(q):
 	words = []
 	for word in splitq:
 		if word not in words: words.append(word)
-	codedict = {}
 	l = {}
 	for s in DATA:
 		data = DATA[s]
@@ -279,10 +260,7 @@ def searchall(q):
 		    "images": data['images'],
 				'meta':data
 		}
-	for key, value in sorted(l.items(),
-	                         reverse=True,
-	                         key=lambda k: k[1]["score"]):
-		codedict[key] = value
+	codedict = dict(sorted(l.items(), reverse=True, key=lambda k: k[1]["score"]))
 	del q, l
 
 	return codedict

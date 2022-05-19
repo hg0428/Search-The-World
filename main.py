@@ -39,7 +39,7 @@ COMPRESS_MIN_SIZE = 500
 Compress(app)
 searches = listdir("searches/")
 for f in searches:
-    remove("searches/" + f)
+	remove(f"searches/{f}")
 searches = []
 
 
@@ -72,37 +72,36 @@ def makejson(q):
 
 @app.route("/", methods=["GET", "HEAD"])
 def home():
-    #htmlparse.GetInfo("https://Search-The-World.hg0428.repl.co")
-    if "q" in request.args:
-        pp = 15
-        pagenum = 0
-        if "pp" in request.args and request.args["pp"] != "0":
-            try:
-                pp = int(request.args["pp"])
-            except:pass
-        if "page" in request.args:
-            try:
-                pagenum = int(request.args["page"])
-            except:pass
-        q = request.args["q"].lower().replace("/", "")
-        if q == "": return render_template("home.html")
-        print("Searching for: ", q)
-        code = makejson(q)
-        results = dict(
-            list(code["Results"].items())[pagenum * pp:pagenum * pp + pp])
-        roundup = lambda x: int(x) if x == int(x) else int(x) + 1
-        return render_template("search.html",
-                               code=code,
-                               results=results,
-                               search=q,
-                               word=spell(q),
-                               pagenum=pagenum,
-                               len=len,
-                               perpage=pp,
-                               roundup=roundup,
-                               round=round, parseText=parseText)
-    else:
-        return render_template("home.html")
+	    #htmlparse.GetInfo("https://Search-The-World.hg0428.repl.co")
+	if "q" not in request.args:
+		return render_template("home.html")
+	pp = 15
+	pagenum = 0
+	if "pp" in request.args and request.args["pp"] != "0":
+	    try:
+	        pp = int(request.args["pp"])
+	    except:pass
+	if "page" in request.args:
+	    try:
+	        pagenum = int(request.args["page"])
+	    except:pass
+	q = request.args["q"].lower().replace("/", "")
+	if q == "": return render_template("home.html")
+	print("Searching for: ", q)
+	code = makejson(q)
+	results = dict(
+	    list(code["Results"].items())[pagenum * pp:pagenum * pp + pp])
+	roundup = lambda x: int(x) if x == int(x) else int(x) + 1
+	return render_template("search.html",
+	                       code=code,
+	                       results=results,
+	                       search=q,
+	                       word=spell(q),
+	                       pagenum=pagenum,
+	                       len=len,
+	                       perpage=pp,
+	                       roundup=roundup,
+	                       round=round, parseText=parseText)
 
 
 @app.route("/api")
@@ -152,21 +151,20 @@ def fav():
 
 @app.route("/index", methods=["GET", "POST"])
 def index_site_page():
-    if request.method == "POST":
-        site = request.form["site"]
-        if "://" not in site:
-            note = "<h2>Please include protocol and / at the end</h2>"
-        else:
-            note = '<h2>DONE!</h1> <p class="des">For now this site was listed as anonymous. Login and site statistics will come in a future version. </p>'
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(index, site)
-                value = future.result()
-            if value == False:
-                note = "<h2>Failed: invalid or inactive site</h2>"
-            elif type(value)==str:note=value
-        return render_template("index.html", note=note)
-    else:
-        return render_template("index.html")
+	if request.method != "POST":
+		return render_template("index.html")
+	site = request.form["site"]
+	if "://" not in site:
+	    note = "<h2>Please include protocol and / at the end</h2>"
+	else:
+	    note = '<h2>DONE!</h1> <p class="des">For now this site was listed as anonymous. Login and site statistics will come in a future version. </p>'
+	    with concurrent.futures.ThreadPoolExecutor() as executor:
+	        future = executor.submit(index, site)
+	        value = future.result()
+	    if value == False:
+	        note = "<h2>Failed: invalid or inactive site</h2>"
+	    elif type(value)==str:note=value
+	return render_template("index.html", note=note)
 
 
 @app.route("/sitemap.xml")
